@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  hms-backend-node:
+    container_name: hms-backend-node
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - hms-network
+
+  mongo:
+    image: mongo:5.0.28
+    container_name: hms-mongo
+    platform: linux/amd64
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - hms-network
+
+volumes:
+  mongo-data:
+
+networks:
+  hms-network:
+    driver: bridge
+
